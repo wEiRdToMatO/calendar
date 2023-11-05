@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat");
+
 .container {
   display: flex;
   flex-direction: column;
@@ -5,6 +7,11 @@
   align-items: center;
   height: 100vh;
   background-color: rgb(253, 245, 254);
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
+}
+
+.react-calendar {
+  font-family: "Montserrat", Arial, Helvetica, sans-serif;
 }
 
 h1 {
@@ -39,3 +46,4 @@ h1 {
 .react-calendar__tile--now:enabled:focus {
   background: #b3c7ff;
 }
+
