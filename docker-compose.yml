@@ -1,0 +1,31 @@
+version: "3.9"
+name: calendar
+services:
+  db:
+    image: postgres:16.0-alpine
+    environment:
+      POSTGRES_DB: calendar.db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1111
+    volumes:
+      - postgre:/var/lib/postgresql/data
+    ports:
+      - 5401:5432
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d calendar"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    restart: unless-stopped
+  
+volumes:
+  postgre:
