@@ -158,7 +158,7 @@ h1 {
   margin-top: 4px;
 }
 
-.num-course select {
+.sidenav select {
   padding: 10px;
   font-size: 16px;
   border: 1px solid #6f48eb;
@@ -168,50 +168,45 @@ h1 {
   margin-left: 13%;
 }
 
-.num-course select:hover {
+.sidenav select:hover {
   background-color: #f8f8fa;
 }
 
-.num-course select:focus {
+.sidenav select:focus {
   outline: none;
   box-shadow: 0 0 5px rgba(111, 72, 235, 0.5);
 }
 
-.num-course option {
+.sidenav option {
   font-size: 16px;
   background-color: #fff;
   color: #000000;
 }
 
-.num-course option:hover {
+.sidenav option:hover {
   background-color: #f8f8fa;
 }
 
-.direction-code select {
-  padding: 10px;
+.session-range {
+  background-color: #7be5ff; /* Цвет выделения для диапазона сессии */
+}
+
+.button-container {
+  margin-top: 20px;
+  margin-left: 30%;
+}
+
+.button-container button {
+  background-color: #6f48eb;
+  color: white;
+  padding: 10px 20px;
   font-size: 16px;
-  border: 1px solid #6f48eb;
+  border: none;
   border-radius: 6px;
-  margin-top: 3px;
-  width: 70%;
-  margin-left: 13%;
+  cursor: pointer; 
+  transition: background-color 0.3s ease;
 }
 
-.direction-code select:hover {
-  background-color: #f8f8fa;
-}
-
-.direction-code select:focus {
-  outline: none;
-  box-shadow: 0 0 5px rgba(111, 72, 235, 0.5);
-}
-
-.direction-code option {
-  font-size: 16px;
-  background-color: #fff;
-  color: #000000;
-}
-
-.direction-code option:hover {
-  background-color: #f8f8fa;
+.button-container button:hover {
+  background-color: #492ca6; 
 }

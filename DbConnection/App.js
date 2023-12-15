@@ -1,9 +1,8 @@
 const express = require('express');
 const app = express();
-const port = 5050; // Укажи подходящий порт
+const port = 5050;
 const pgp = require('pg-promise')();
 
-// Замени connectionStr на свои реальные данные для подключения к PostgreSQL
 const connectionStr = 'postgresql://postgres:1111@localhost:5432/calendar.db';
 const db = pgp(connectionStr);
 

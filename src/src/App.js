@@ -7,22 +7,19 @@ function App() {
   const [date, setDate] = useState(new Date());
   const [selectedTerm, setSelectedTerm] = useState('1'); // По умолчанию выбран первый семестр
   const [selectedDirection, setSelectedDirection] = useState('09.03.03');
+  const [selectedOption, setSelectedOption] = useState('session');
   const [directions, setDirections] = useState([]);
   const [studyForms, setStudyForms] = useState([]);
   const [numOfSession, setNumOfSession] = useState(undefined);
-  const [numOfPractice, setNumOfPractice] = useState(undefined);
-  const [numOfVacation, setNumOfVacation] = useState(undefined);
+  const [numOfPractice, setNumOfPractice] = useState([]);
+  const [numOfVacation, setNumOfVacation] = useState([]);
   const [term, setTerm] = useState([]);
+  const [sessionStart, setSessionStart] = useState(null);
+  const [sessionEnd, setSessionEnd] = useState(null);
 
   const onChange = (newDate) => {
     setDate(newDate);
   };
-
-  useEffect(() => {
-    fetchStudyForms();
-    fetchTerm();
-    fetchDirections();
-  }, []);
 
   const fetchDirections = () => {
     fetch('http://localhost:5050/directions')
@@ -40,38 +37,53 @@ function App() {
 
   const fetchNumOfSession = () => {
     fetch('http://localhost:5050/session_dates')
-    .then(response => {
-      return response.json();
-    })
-    .then(json => {
-      setNumOfSession(json[0].num_of_weeks);
-    });
+    .then(response => response.json())
+    .then(data => setNumOfSession(data))
+    .catch(error => console.error('Error fetching summer practice dates:', error));
+  };
 
-    alert(numOfSession);
+  const calculationOfSessionDates = (numOfSession) => {
+    const isSunday = (date) => date.getDay() === 0;
+  
+    let startDate = new Date(new Date().getFullYear(), 8, 1);
+  
+    while (!isSunday(startDate)) {
+      startDate.setDate(startDate.getDate() + 1);
+    }
+  
+    let startSessionDate = new Date(startDate);
+    startSessionDate.setDate(startSessionDate.getDate() + numOfSession * 7);
+  
+    let endSessionDate = new Date(startSessionDate);
+    endSessionDate.setDate(endSessionDate.getDate() + numOfSession * 7);
+  
+    return {
+      startSessionDate,
+      endSessionDate,
+    };
+  };
+
+  const tileClassName = ({ date, view }) => {
+    if (view === 'month') {
+      if (date >= sessionStart && date <= sessionEnd) {
+        return 'session-range';
+      }
+    }
+    return null;
   };
 
   const fetchNumOfPractice = () => {
     fetch('http://localhost:5050/summer_practice_dates')
-    .then(response => {
-      return response.json();
-    })
-    .then(json => {
-      setNumOfPractice(json[0].num_of_weeks);
-    });
-
-    alert(numOfPractice);
+      .then(response => response.json())
+      .then(data => setNumOfPractice(data))
+      .catch(error => console.error('Error fetching summer practice dates:', error));
   };
 
   const fetchNumOfVacation = () => {
     fetch('http://localhost:5050/vacation_dates')
-    .then(response => {
-      return response.json();
-    })
-    .then(json => {
-      setNumOfVacation(json[0].num_of_weeks);
-    });
-
-    alert(numOfVacation);
+      .then(response => response.json())
+      .then(data => setNumOfVacation(data))
+      .catch(error => console.error('Error fetching summer vacation dates:', error));
   };
 
   const fetchTerm = () => {
@@ -90,6 +102,35 @@ function App() {
     setSelectedDirection(event.target.value);
     fetchDirections();
   };
+
+  const onOptionChange = (event) => {
+    setSelectedOption(event.target.value);
+  };
+
+  const fetchData = () => {
+    switch (selectedOption) {
+      case 'session':
+        fetchNumOfSession();
+        break;
+      case 'practice':
+        fetchNumOfPractice();
+        break;
+      case 'vacation':
+        fetchNumOfVacation();
+        break;
+      default:
+        break;
+    }
+  };
+
+  useEffect(() => {
+    fetchStudyForms();
+    fetchTerm();
+    fetchDirections();
+    fetchData();
+  }, [selectedOption]);
+  
+  
 
   return (
     <div className='container'>
@@ -124,6 +165,19 @@ function App() {
               ))}
             </select>
           </div>
+          <div className='option'>
+            <p>Что показать?</p>
+            <select value={selectedOption} onChange={onOptionChange}>
+              <option value='session'>Сессия</option>
+              <option value='practice'>Летние практики</option>
+              <option value='vacation'>Каникулы</option>
+            </select>
+          </div>
+          <div className='button-container'>
+            <button onClick={fetchData}>
+              <span>Показать</span>
+            </button>
+          </div>
         </div>
       <div className="calendar-container">
         <p>Выбранная дата: {/*date.toLocaleDateString()*/}</p>
@@ -132,12 +186,10 @@ function App() {
             value={date}
             minDetail='year'м
             selectRange={true}
+            tileClassName={tileClassName}
           />
       </div>  
 
-      <button onClick={fetchNumOfSession}>
-        <span>fetch session</span>
-      </button>
     </div>
   );
 }
